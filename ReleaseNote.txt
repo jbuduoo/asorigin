@@ -1,0 +1,28 @@
+﻿210817_V1.1.0_初版
+
+
+20210824
+增加了menu中的drmRules及profileRules，並增加了api讀取的功能。---小戴
+
+20210825
+增加profile 
+增口了drmRules、profileRules及profile 防呆的功能。
+
+20210826
+修改Profile type的select選單內容
+修改drmRules、profileRules及profile 使用者管理功能。
+
+20210901 
+增加及修政 DrmRules、Ingest、IngestLog、Profile及ProfileRules的頁及api功能。
+
+20210906 
+修改IngestThread，加入轉檔的動作。
+
+20211004
+增加vod的功能，加入drm各項轉檔的條件。
+從csorigin改成ASOrigin
+
+20211013 第一版1.1.0
+
+20220408 加入shaka packager
+

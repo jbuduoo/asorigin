@@ -1,0 +1,24 @@
+wdm安裝Tomcat
+
+$project_path為專案路徑
+$tomcat_pathi為Tomcat案裝路徑
+
+修改server.xml
+<Host name="localhost"  appBase="$project_path/webapps"
+
+新增Project Run
+Run->Run Configurations->Java Application->右鍵->New
+Main Tab:
+Name:WDM
+Project:WDM
+Main class:org.apache.catalina.startup.Bootstrap
+Stop in main:Enable
+
+Arguments Tab:
+Program arguments:-config "$project_path/server.xml" start
+VM arguments:-Dcatalina.home="$tomcat_path" -Djava.endorsed.dirs="$tomcat_path/endorsed" -Dcatalina.base="$tomcat_path" -Djava.io.tmpdir="$tomcat_path\temp" -Xms256m -Xmx768m
+
+Classpath Tab:
+User Entries->Add External JARs
+$tomcat_path/bin/bootstrap.jar
+$tomcat_path/bin/tomcat-juli.jar

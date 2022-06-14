@@ -1,0 +1,25 @@
+210406_為了混淆,做了以下動作
+為了混淆,將system.service.SystemService改成b.b.b,system.db.db.DataModule改成b.a.a
+將jsp改成servlet
+servlet不再寫至web.xml
+原jsp放至jsp目錄,以防日後修改
+若有新增jsp可至apache-tomcat-10.0.10\work\Catalina\localhost\ROOT\org\apache\jsp\找到source code改成servlet
+
+打包時要先執行build.xml,會將程式混淆至bin目錄,用bin目錄的資料打包
+
+source code弱掃修改記錄
+command injection:過濾特殊字元(;&)使用Util.removeControlCharacter
+Cross-site scripting (XSS):使用org.owasp.encoder.Encode
+Path Manipulation: 使用Util.cleanString
+SQL injection:使用PreparedStatement
+Privacy Violation: Heap Inspection 使用StringBuilder,如Util.removeControlCharacter()
+
+20210824
+增加了menu中的drmRules及profileRules，並增加了api讀取的功能。---小戴
+
+211007
+安裝完rpm後必需再copy license.key至/opt/asorigin/web/bin/
+再執行service asorigin restart
+
+20211012
+把專案從csorigin搬到asorigin。

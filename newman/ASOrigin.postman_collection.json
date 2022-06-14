@@ -1,0 +1,663 @@
+{
+	"info": {
+		"_postman_id": "d05ac7c6-ab3f-4ae4-9d37-cbaeee824d68",
+		"name": "ASOrigin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "drmRules",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://192.168.101.219:8080/asorigin/rest/v1/drmRules.rest",
+					"protocol": "http",
+					"host": [
+						"192",
+						"168",
+						"101",
+						"219"
+					],
+					"port": "8080",
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"drmRules.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "drmRules_add",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"aaa\",\r\n    \"type\": \"HLS AES-128\",\r\n    \"value1\": \"https://www.example.com/oceans.key\",\r\n    \"value2\": \"000102030405060708090a0b0c0d0e0f\",\r\n    \"value3\": \"0f0e0d0c0b0a09080706050403020100\",\r\n    \"value4\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/drmRules.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"drmRules.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "drmRules_Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"aaa\",\r\n    \"type\": \"HLS AES-128\",\r\n    \"value1\": \"https://www.example.com/oceans.key\",\r\n    \"value2\": \"000102030405060708090a0b0c0d0e0f\",\r\n    \"value3\": \"0f0e0d0c0b0a09080706050403020200\",\r\n    \"value4\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/drmRules.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"drmRules.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "drmRules_Delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"aaa\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/drmRules.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"drmRules.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "profileRules_select",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/profileRules.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"profileRules.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "profileRules_add",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"aaa\",\r\n    \"type\": \"MPEG-DASH\",\r\n    \"value1\": \"Time\",\r\n    \"value2\": \"1\",\r\n    \"value3\": \"DrmAW\",\r\n    \"value4\": \"\",\r\n    \"value5\": \"\",\r\n    \"value6\": \" \",\r\n    \"value7\": \"\",\r\n    \"value8\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/profileRules.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"profileRules.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "profileRules_update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"aaa\",\r\n    \"type\": \"HLS\",\r\n    \"value1\": \"TS\",\r\n    \"value2\": \"1\",\r\n    \"value3\": \"DrmAF\",\r\n    \"value4\": \"\",\r\n    \"value5\": \"\",\r\n    \"value6\": \"\",\r\n    \"value7\": \"\",\r\n    \"value8\": \"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/profileRules.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"profileRules.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "profileRules_delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "        {\r\n            \"name\": \"aaa\"\r\n        }"
+				},
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/profileRules.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"profileRules.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "profile_select",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/profile.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"profile.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "profile_add",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "        {\r\n            \"name\": \"abcde\",\r\n            \"outputUrl\": \"/vod/AAA/$ingestname/_/\",\r\n            \"Transcode\":\"N\",\r\n            \"profileRule\": \"a01\"\r\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/profile.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"profile.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "profile_update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "        {\r\n            \"name\": \"abcde\",\r\n            \"outputUrl\": \"/vod/AAA/$ingestname/_/\",\r\n            \"Transcode\":\"N\",\r\n            \"profileRule\": \"a03,a04\"\r\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/profile.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"profile.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "profile_delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "        {\r\n            \"name\": \"abcde\"\r\n        }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/profile.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"profile.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ingest_select",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/ingest.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"ingest.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ingestLog_select",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/ingestLog.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"ingestLog.rest"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "vod_select",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"code is 0\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.code).to.eql(0);\r",
+							"});\r",
+							"pm.test(\"message is Success\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.message).to.eql('Success');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/asorigin/rest/v1/vod.rest",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"asorigin",
+						"rest",
+						"v1",
+						"vod.rest"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

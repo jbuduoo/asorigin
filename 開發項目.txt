@@ -1,0 +1,381 @@
+1.Drm Rules
+name:Text
+type:<Select> 1:HLS AES-128,2:Ascentac FairPlay,101:Widevine Generic,102:Ascentac Widevine
+value1
+value2
+value3
+value4
+
+type=HLS AES-128
+value1->Url:Text
+value2->Key:Text
+value3->IV:Text
+
+type=Ascentac FairPlay
+value1->Url:Text
+value2->Provider:Text
+value3->AccessKey:Text
+value4->AccessIV:Text
+
+type=Widevine Generic
+value1->Key ID
+value2->Encryption Key
+value3->Content Protection
+value4->PSSH Box
+
+type=Ascentac Widevine
+value1->Url:Text
+value2->Provider:Text
+value3->AccessKey:Text
+value4->AccessIV:Text
+
+2.Profile Rules
+name:Text
+type:<Select> HLS,MPEG-DASH
+value1
+value2
+value3
+value4
+value5
+value6
+value7
+value8
+
+type=HLS
+value1->Segment Format <Select> TS,fMP4
+value2->Chunk Duratoion  Text
+value3->Drm <Select> HLS AES-128,Ascentac FairPlay
+value4->Video Max Bitrate  Text
+value5->Video Min Bitrate  Text
+value6->Audio Max Bitrate  Text
+value7->Audio Min Bitrate  Text
+value8->Version   <Select> Auto,1~8
+
+type=MPEG-DASH
+value1->Template Type <Select> Time,Number
+value2->Chunk Duratoion  Text
+value3->Drm <Select> Widevine Generic,Ascentac Widevine
+value4->Video Max Bitrate  Text
+value5->Video Min Bitrate  Text
+value6->Audio Max Bitrate  Text
+value7->Audio Min Bitrate  Text
+
+3.Profile
+name:Text
+output path: Text
+profile rule: <Select>
+
+properties新增CSOrigin.IngestPath=/opt/csorigin/ingest,CSOrigin.ContentPath=/opt/csorigin/content
+4.Ingest
+name:Text
+source folder: <Select> 列出CSOrigin.IngestPath下所有目錄
+profile: <Select>
+status:不可編輯  db自動填入Queued, 後台程式若執行,會改成Running
+
+5.Ingest Log (只能讀)
+create time: Text
+end time: Text
+name:Text
+source folder: Text
+profile: Text
+status: Text
+note: Text
+
+相關指令參考https://docs.unified-streaming.com/documentation/vod/streaming.html
+
+Ingest動作
+假設選擇了sample目錄,裡面有1.mp4,2,mp4,3.mp4的檔案(目前只判斷副檔名為mp4或ismv)
+CSOrigin.ContentPath=/opt/csorigin/content
+profile Name=profile1, Output Path=/vod
+ingest Name=test,
+執行動作為:
+在content path下建立/vod/test的目錄
+拷貝1.mp4,2.mp4,3.mp4至/vod/test目錄
+
+接下來依照profile rule進行轉檔的動作
+執行程式為 mp4split --license-key=/opt/csorigin/web/bin/license.key
+依以下設定不同而帶不同參數
+1.若profile rule name=hlsvod則加-o hlsvod.ism
+2.若type=hls則加--iss.disable --hds.disable --mpd.disable
+若type=dash則加--hls.disable --iss.disable --hds.disable
+3.若Segment Format=TS不用加
+若Segment Format=fMP4則加--hls.fmp4
+若Template Type=Time不用加--mpd.segment_template=time
+若Template Type=Number則加--mpd.segment_template=number
+4.若type為hls,Chunk Duratoion設為4則加--hls.minimum_fragment_length=4
+若type為dsah,Chunk Duratoion設為2則加--mpd.minimum_fragment_length=2
+5.drm比較複雜,晚點做
+6.bitrate比較複雜,晚點做
+若bitrate有設定必須先檢查每個檔案的bitrate
+執行mp4split --license-key=/opt/csorigin/web/bin/license.key /opt/csorigin/content/vod/test/1.mp4
+回覆如下:
+mp4split version=1.11.3 (24483)    Copyright 2007-2021 CodeShop B.V.
+
+I0.046 Manifest 
+I0.046 Track 1:
+I0.046 src=mv_720p.mp4
+I0.046 video bitrate=1195000 name=video
+I0.046 id=1 timescale=24000 lang=und
+I0.046 vide/avc1 dref=1 bitrate=1195000/0 size=1280x720 sar=1:1 dar=16:9 codecs=avc1.4D401F
+I0.046 Track 2:
+I0.046 src=mv_720p.mp4
+I0.046 audio bitrate=127999 name=audio_eng
+I0.046 id=2 timescale=44100 lang=en
+I0.046 soun/mp4a dref=1 bitrate=127999/127999 tag=255 samplerate=44100 channels=2 sample_size=16 packet_size=4
+I0.051 Preprocessing...
+W0.225 Input file has recovery points (open GOP structure), output may not be supported by all players
+Status: 400 FMP4_400
+X-USP-Error: [Error] Missing output file
+
+video分析video bitrate=xxxxxx
+audio分析audio bitrate=xxxxxx
+若audio有設定,必須將video及audio分開設
+假設1.mp4 audio bitrate=48000, 2.mp4 audio bitrate=128000, 3.mp4 audio bitrate=256000
+設定audio min bitrate=0, audio max bitrate=200000
+參數為
+/opt/csorigin/content/vod/test/1.mp4 --track_type=video /opt/csorigin/content/vod/test/2.mp4 --track_type=video /opt/csorigin/content/vod/test/3.mp4 --track_type=video /opt/csorigin/content/vod/test/1.mp4 --track_type=audio /opt/csorigin/content/vod/test/2.mp4 --track_type=audio
+
+
+
+
+
+
+
+7.version=auto不用加,若設為3則加--hls.client_manifest_version=3
+
+example:假設name=hlsvod,type=hls,segment format=fMP4,chunk duration=4,drm=OFF,version=3
+執行的指今為
+mp4split --license-key=/opt/csorigin/web/bin/license.key -o /opt/csorigin/content/vod/test/hlsvod.ism --iss.disable --hds.disable --mpd.disable --hls.fmp4 --hls.minimum_fragment_length=4 --hls.client_manifest_version=3 /opt/csorigin/content/vod/test/1.mp4 /opt/csorigin/content/vod/test/2.mp4 /opt/csorigin/content/vod/test/3.mp4
+
+以上完成Ingest動作
+
+
+5.VOD
+參照anevia http://192.168.101.82   admin/paris
+欄位為Name,Duration,Size,Profile,Delete
+展開資料為Video tracks,Audio tracks,Text tracks,Output
+Duration資料取得方法,讀取資料夾中一個mp4或ismv檔,指令如下:
+/opt/csorigin/web/bin/ffprobe /opt/csorigin/content/vod/test/1.mp4
+會抓到如Duration: 00:03:37.69, start: 0.000000, bitrate: 1328 kb/s字串
+
+可改成/opt/csorigin/web/bin/ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 /opt/csorigin/content/vod/test/1.mp4
+會抓到217.688000
+
+表示時間為3分37秒
+
+點擊展開後左邊呈現video及audio information,右邊呈現profile rule name及url
+video及audio information參照ism檔(建立一個全部bitrate的ism檔,分析完即刪除)
+hls url為http://serverip/profile output path/ingest name/profile rule name.ism/playlist.m3u8
+dsah url為http://serverip/profile output path/ingest name/profile rule name.ism/manifest.mpd
+serverip可取用style/my.js的getServerIP
+
+
+多語系
+drm rules --> 加密規則
+profile rules --> 配置資料規則
+profile --> 配置資料
+ingest --> 轉檔
+ingest log --> 轉檔記錄
+VOD --> 點播列表
+
+
+AES-128加密
+若Url設為https://www.example.com/oceans.key,則加參數為--hls.license_server_url=https://www.example.com/oceans.key
+若Key設為000102030405060708090a0b0c0d0e0f(可做防呆,只能輸入16進制字串,00-0F,32字元)
+則加參數為--hls.key=:000102030405060708090a0b0c0d0e0f
+若IV設為0f0e0d0c0b0a09080706050403020100(可做防呆,只能輸入16進制字串,00-0F,32字元)
+則加參數為--hls.key_iv=0f0e0d0c0b0a09080706050403020100
+IV可以為空字串,若為空字串則不加參數
+
+確認是否設定成功可查看第二層的m3u8
+若有類似以下字串代表設定成功
+#EXT-X-KEY:METHOD=AES-128,URI="https://www.example.com/oceans.key",IV=0x000102030405060708090A0B0C0D0E0F
+
+Widevine Generic加密
+刪除Content Protection設定
+若Key ID設為000102030405060708090a0b0c0d0e0f(可做防呆,只能輸入16進制字串,00-0F,32字元)
+若Encryption Key設為0f0e0d0c0b0a09080706050403020100(可做防呆,只能輸入16進制字串,00-0F,32字元)
+則加參數為--widevine.key=000102030405060708090a0b0c0d0e0f:0f0e0d0c0b0a09080706050403020100
+若PSSH Box設為CAESEN4y8W8DJkappp8FfT7uus4aB3dlaXRlY2giBDEwMjI=
+則加參數為--widevine.drm_specific_data=CAESEN4y8W8DJkappp8FfT7uus4aB3dlaXRlY2giBDEwMjI=
+
+確認是否設定成功可查看manifest.mpd
+若有類似以下字串代表設定成功
+<ContentProtection
+	schemeIdUri="urn:mpeg:dash:mp4protection:2011"
+	value="cenc"
+	cenc:default_KID="00010203-0405-0607-0809-0A0B0C0D0E0F">
+</ContentProtection>
+
+
+Ascentac Widevine加密
+假設設定如下:
+Url=https://test.drms.ascentac.com
+Provider=4b0QSlivP3A8btxXf2lrUA
+AccessKey=g4OTVhMDEzYzkyYj
+AccessIV=ZTc4M2QxNTY3MzE4
+
+先用AES-128加密目前的時間,產出一個token
+String time = String.valueOf(System.currentTimeMillis()/1000);
+String token = AES128CBC.encrypt(time, "g4OTVhMDEzYzkyYj", "ZTc4M2QxNTY3MzE4");
+假設ingest name=abc
+token=291f8157b939c2912206564fa82168c8
+完整的url如下:
+https://test.drms.ascentac.com/4b0QSlivP3A8btxXf2lrUA/drms/v1/cpix/wvservice.rest?p=4b0QSlivP3A8btxXf2lrUA&c=abc&token=291f8157b939c2912206564fa82168c8
+回覆如下:
+<?xml version="1.0" encoding="UTF-8"?>
+<cpix:CPIX id="abc" xmlns:cpix="urn:dashif:org:cpix" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:enc="http://www.w3.org/2001/04/xmlenc#" xmlns:pskc="urn:ietf:params:xml:ns:keyprov:pskc">
+<cpix:ContentKeyList>
+<cpix:ContentKey explicitIV="7Ex3ADPUjz0jNL2sueqpNA==" kid="ec4c7700-33d4-8f3d-2334-bdacb9eaa934">
+<cpix:Data>
+<pskc:Secret>
+<pskc:PlainValue>Aym1CWlqllxophiZbibJYg==</pskc:PlainValue>
+</pskc:Secret>
+</cpix:Data>
+</cpix:ContentKey>
+</cpix:ContentKeyList>
+<cpix:DRMSystemList>
+<cpix:DRMSystem kid="ec4c7700-33d4-8f3d-2334-bdacb9eaa934" systemId="edef8ba9-79d6-4ace-a3c8-27dcd51d21ed">
+<cpix:PSSH>AAAARnBzc2gAAAAA7e+LqXnWSs6jyCfc1R0h7QAAACYIARIQ7Ex3ADPUjz0jNL2sueqpNBoHd2VpdGVjaCIDYWJjKgJIRA==</cpix:PSSH>
+<cpix:ContentProtectionData>PGNlbmM6cHNzaCB4bWxuczpjZW5jPSJ1cm46bXBlZzpjZW5jOjIwMTMiPkFBQUFSbkJ6YzJnQUFBQUE3ZStMcVhuV1NzNmp5Q2ZjMVIwaDdRQUFBQ1lJQVJJUTdFeDNBRFBVanowak5MMnN1ZXFwTkJvSGQyVnBkR1ZqYUNJRFlXSmpLZ0pJUkE9PTwvY2VuYzpwc3NoPg==</cpix:ContentProtectionData>
+</cpix:DRMSystem>
+</cpix:DRMSystemList>
+</cpix:CPIX>
+分析如下:
+先找到DRMSystemList(內含可能有多個DRMSystem),找到DRMSystem,判斷systemId=edef8ba9-79d6-4ace-a3c8-27dcd51d21ed(widevine固定的systemid)
+找到kid="ec4c7700-33d4-8f3d-2334-bdacb9eaa934",
+依ec4c7700-33d4-8f3d-2334-bdacb9eaa934找到上面ContentKeyList(內含可能有多個ContentKey)內的ContentKey的kid="ec4c7700-33d4-8f3d-2334-bdacb9eaa934"
+如此可找到與Widevine Generic對應的值
+Key ID=kid(ec4c7700-33d4-8f3d-2334-bdacb9eaa934-->ec4c770033d48f3d2334bdacb9eaa934)
+Encryption Key=PlainValue(base64 decode to hex)
+PSSH Box=PSSH
+如同Widevine Generic加參數即可
+
+
+Ascentac FairPlay加密
+假設設定如下:
+Url=https://test.drms.ascentac.com
+Provider=4b0QSlivP3A8btxXf2lrUA
+AccessKey=g4OTVhMDEzYzkyYj
+AccessIV=ZTc4M2QxNTY3MzE4
+
+先用AES-128加密目前的時間,產出一個token
+String time = String.valueOf(System.currentTimeMillis()/1000);
+String token = AES128CBC.encrypt(time, "g4OTVhMDEzYzkyYj", "ZTc4M2QxNTY3MzE4");
+假設ingest name=abc
+token=291f8157b939c2912206564fa82168c8
+完整的url如下:
+https://test.drms.ascentac.com/4b0QSlivP3A8btxXf2lrUA/drms/v1/cpix/fpsservice.rest?p=4b0QSlivP3A8btxXf2lrUA&c=abc&token=291f8157b939c2912206564fa82168c8
+回覆如下:
+<?xml version="1.0" encoding="UTF-8"?>
+<cpix:CPIX id="abc" xmlns:cpix="urn:dashif:org:cpix" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:enc="http://www.w3.org/2001/04/xmlenc#" xmlns:pskc="urn:ietf:params:xml:ns:keyprov:pskc">
+<cpix:ContentKeyList>
+<cpix:ContentKey explicitIV="7Ex3ADPUjz0jNL2sueqpNA==" kid="3f8361c6-d11f-3426-a76e-0f6819340dde">
+<cpix:Data>
+<pskc:Secret>
+<pskc:PlainValue>Aym1CWlqllxophiZbibJYg==</pskc:PlainValue>
+</pskc:Secret>
+</cpix:Data>
+</cpix:ContentKey>
+</cpix:ContentKeyList>
+<cpix:DRMSystemList>
+<cpix:DRMSystem kid="3f8361c6-d11f-3426-a76e-0f6819340dde" systemId="94ce86fb-07ff-4f43-adb8-93d2fa968ca2">
+<cpix:HLSSignalingData>I0VYVC1YLUtFWTpNRVRIT0Q9U0FNUExFLUFFUyxVUkk9InNrZDovL2FiYyIsS0VZRk9STUFUPSJjb20uYXBwbGUuc3RyZWFtaW5na2V5ZGVsaXZlcnkiLEtFWUZPUk1BVFZFUlNJT05TPSIxIg==</cpix:HLSSignalingData>
+</cpix:DRMSystem>
+</cpix:DRMSystemList>
+</cpix:CPIX>
+分析如下:
+先找到DRMSystemList(內含可能有多個DRMSystem),找到DRMSystem,判斷systemId=94ce86fb-07ff-4f43-adb8-93d2fa968ca2(fairplay固定的systemid)
+找到kid="3f8361c6-d11f-3426-a76e-0f6819340dde",
+依3f8361c6-d11f-3426-a76e-0f6819340dde找到上面ContentKeyList(內含可能有多個ContentKey)內的ContentKey的kid="3f8361c6-d11f-3426-a76e-0f6819340dde"
+如此可找相關的值
+IV=explicitIV(base64 decode to hex)
+Key=PlainValue(base64 decode to hex)
+Uri=skd://abc(ingest name)
+加參數如下:
+--hls.key=:Key --hls.key_iv=IV --hls.license_server_url=Uri --hls.playout=sample_aes_streamingkeydelivery
+
+確認是否設定成功可查看第二層的m3u8
+若有類似以下字串代表設定成功
+#EXT-X-KEY:METHOD=SAMPLE-AES,URI="skd://abc",KEYFORMAT="com.apple.streamingkeydelivery",KEYFORMATVERSIONS="1"
+
+6.Live
+menu新增Live項目(跟VOD一樣可以展開)
+欄位為Channel Name,Input Type,Input,Live Window,Archive Lifecycle,Profile,Restart
+Channel Name --> Text
+Input Type --> <Select> MPEGTS
+Input -->  Multi Line Text (按enter換行可輸入多個Input,ex: udp://224.1.2.3:1234)
+Live Window --> Text  (預設60)
+Archive Lifecycle --> Text (預設120)
+Profile --> <Select> profile
+Restart --> 不可編輯,呈現一個按鈕
+
+新增完後按照profile的參數執行,不同的地方如下
+ingest name改用channel name的資料
+不用加source (*.mp4 or *.ismv)
+ism改成isml (原本-o abc.ism改成-o abc.isml)
+另外要加的參數如下:
+Live Window若設60,則加--dvr_window_length=60
+Archive Lifecycle若設120,則加--archive_segment_length==120
+
+另外上一層目錄必需設定權限777
+
+執行mp4split後再依input執行ffmpeg
+假設profile rule的url為/live/abc.isml
+若input 設定如下:
+udp://224.1.2.3:1234
+udp://224.1.2.3:1235
+則必須執行兩個ffmpeg
+b.webPath + "bin/ffmpeg -i udp://224.1.2.3:1234 -map 0 -c copy -bsf:a aac_adtstoasc -fflags genpts -write_prft pts -movflags empty_moov+separate_moof+default_base_moof+cmaf+delay_moov -f mp4 "http://127.0.0.1/live/abc.isml/Streams(abc_1)"
+b.webPath + "bin/ffmpeg -i udp://224.1.2.3:1235 -map 0 -c copy -bsf:a aac_adtstoasc -fflags genpts -write_prft pts -movflags empty_moov+separate_moof+default_base_moof+cmaf+delay_moov -f mp4 "http://127.0.0.1/live/abc.isml/Streams(abc_2)"
+
+若ffmpeg停止了必須執行restart的動作
+可能的錯誤訊息如下:
+av_interleaved_write_frame(): Broken pipe
+Error writing trailer of http://192.168.101.213/test/test.isml/Streams(channel1): Broken pipe
+
+restart動作為
+假設profile rule為abc
+Output Path為/live
+刪除目錄下/opt/asorigin/content/live/
+abc.isml
+abc.db3
+如上例input的abc_1.ismv,abc_2.ismv
+
+
+20220301需加入歷史轉發查詢、轉發群組設定，告警記錄。告警log的內容再和bk確認
+
+1.Device Alarm Forward
+name:Text				告警轉發名稱
+forwardUser:checkbox	轉發給那些用戶
+forwardDevice:checkbox	那些device告警需要轉發
+forwardMethod:checkbox	轉發方法email,line,sms,snmp
+
+2.Device Alarm Log
+id:Number				告警ID
+alarmTime:Text				告警時間
+deviceName:Text				裝置名稱
+deviceIP:Text				裝置IP
+devicePort:Text				裝置Port
+deviceStatus:Text			裝置狀態,成功或失敗
+note:Text					備註
+
+3.Device Alarm Forward History
+forwardTime:Text	轉發時間
+forwardName:Text	轉發名稱
+forwardUser			轉發用戶
+forwardDevice		轉發裝置
+forwardMethod:Text	轉發方法
+forwardStatus:Text	轉發狀態,成功或失敗
+
+20220315 在shaka packager中加入
+1.status 顯示audio language，相同bitrate不同lang的audio會被合併成一個。
+2.status 需要顯示input status，訊號中斷後channel status會重抓資料。
+3.profile增加/刪除rule之後，會自動套用到channel。
+4.設定default langeuage
+5.dash - Time模式下chunk name 按時間輸出 
+
+20220412 未完成
+1. shaka packager 及vod 離線時 觸發告警系統
+2. shaka 在讀取 aac及ea3 時需用的程式碼不同，但系統無法自行判斷，程式碼尚未加入。
+

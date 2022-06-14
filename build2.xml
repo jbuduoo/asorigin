@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<project default="main">
+	<target name="main" depends="obfuscate" description="Create project">
+ 		<echo>Creating project.</echo>
+	</target>
+	<target name="obfuscate" >
+			<taskdef resource="proguard/ant/task.properties" classpath="proguard6.0.3/lib/proguard.jar" />
+			<proguard configuration="proguard.pro" />
+			<echo>obfuscate</echo>
+		</target>
+</project>

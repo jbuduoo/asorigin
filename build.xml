@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<project name="junit-test">
+	<property name="src.dir" location="src"></property>
+	<property name="test.src.dir" location="test"></property>
+	<property name="lib.dir" location="D:\weitech\workspace03\ASOrigin\webapps\ROOT\WEB-INF\lib"></property>
+	<property name="tomcat10.dir" location="D:\weitech\workspace03\ASOrigin\tomcat10"></property>
+	<property name="java.dir" location="C:\Program Files (x86)\OpenJDK\jdk-8.0.262.10-hotspot\jre\lib"></property>
+	<property name="build.dir" location="build"></property>
+	<property name="build.classes" location="${build.dir}/classes"></property>
+	<property name="build.report" location="${build.dir}/report"></property>
+	<property name="run-test.class" value="**/Test*.class"></property>
+
+
+	<path id="compile-path">
+		<fileset dir="${lib.dir}" includes="*.jar"></fileset>
+		<fileset dir="${tomcat10.dir}" includes="*.jar"></fileset>
+		<fileset dir="${java.dir}" includes="*.jar"></fileset>
+		<fileset dir="${tomcat10.dir}" includes="*.jar"></fileset>
+	</path>
+
+	<path id="compile-test-path">
+		<path refid="compile-path"></path>
+		<pathelement location="${build.classes}"/>
+	</path>
+
+	<target name="clean">
+		<echo>進行項目清理工作 </echo>
+		<delete dir="${build.dir}" />
+	</target>
+
+	<target name="init">
+		<echo>進行項目初始化 </echo>
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.classes}" />
+		<mkdir dir="${build.report}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<echo>編譯源文件</echo>
+		<javac includeantruntime="" srcdir="${src.dir}" destdir="${build.classes}"  classpathref="compile-path" encoding="utf-8" ></javac>
+	</target>
+
+	<target name="run-test" depends="compile">
+		<echo>運行單元測試</echo>
+		<junit printsummary="true">
+			<classpath refid="compile-test-path"></classpath>
+			<formatter type="xml"/>
+			<batchtest todir="${build.report}">
+				<fileset dir="${build.classes}" includes="${run-test.class}"></fileset>
+			</batchtest>
+		</junit>
+		<junitreport todir="${build.report}">
+			<fileset dir="${build.report}" includes="TEST-*.xml"></fileset>
+			<report format="frames" todir="${build.report}/html"/>
+		</junitreport>
+	</target>
+
+	
+</project>
